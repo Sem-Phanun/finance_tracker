@@ -1,61 +1,72 @@
-import React, {useState} from 'react'
-import { NavLink, Link } from 'react-router-dom'
-import { IoIosArrowBack } from 'react-icons/io'
-import {MdSpaceDashboard} from 'react-icons/md'
-import {FaMoneyCheckAlt} from 'react-icons/fa'
-import {GrMoney} from 'react-icons/gr'
+import React, {useState, useEffect} from 'react'
+import {Layout, Menu} from 'antd'
+import {DashboardOutlined,} from '@ant-design/icons';
+import { RiMoneyDollarCircleLine } from "react-icons/ri";
+import { FaMoneyBillTransfer } from "react-icons/fa6";
+import { Link, useNavigate } from 'react-router-dom'
 import Logo from '../assets/logo.png'
-const Sidebar = () => {
+const { Sider } = Layout
 
-    const [enable, setEnable] = useState(true)
-    const menu = [
-        {
-            id: 1,
-            title: "Dashboard",
-            path: '/',
-            icons: <MdSpaceDashboard />
-        },
-        {
-            id: 1,
-            title: "Icomes",
-            path: '/income',
-            icons: <FaMoneyCheckAlt />
-        },
-        {
-            id: 1,
-            title: "Expense",
-            path: '/expenses',
-            icons: <GrMoney />
-        },
-    ]
+
+function getItem(label, key, icon, children) {
+    return {
+      key,
+      icon,
+      children,
+      label,
+    };
+  }
+
+const items = [
+    getItem('Dashboard', '/', <DashboardOutlined />),
+    getItem('Income', '/income', <RiMoneyDollarCircleLine />),
+    getItem('Expense', '/expenses', <FaMoneyBillTransfer />),
+];
+
+
+const Sidebar = () => {
+    const [collapsed, setCollapsed] = useState(false);
+    const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth <= 768)
+    const navigate = useNavigate()
+    const onClickMenu = (item) => {
+        console.log(item);
+        navigate(item.key);
+    };
+
+    useEffect(() => {
+      const resizeScreen = () => {
+        const isSmall = window.innerWidth <= 768;
+        setIsSmallScreen(isSmall);
+        if (isSmall) {
+          setCollapsed(true);
+        } else {
+          setCollapsed(false);
+        }
+      }
+
+      resizeScreen()
+
+      // Event listener for window resize
+    window.addEventListener('resize', resizeScreen);
+
+    // Cleanup the event listener when component unmounts
+    return window.removeEventListener('resize', resizeScreen);
+    },[])  
   return (
     <>
-        <aside className={`bg-primary h-[100vh] ${enable ? 'w-[15vw]' : 'w-20'} duration-300 relative`}>
-                
-            <ul className='flex flex-col px-8 my-4'>
-            <IoIosArrowBack className={`bg-white border rounded-full absolute -right-3 size-6 border-primary cursor-pointer ${!enable && 'rotate-180'}`}
-                    onClick={()=> setEnable(!enable)}
+        <Sider collapsible={!isSmallScreen} collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
+            {/* <div className="demo-logo-vertical" /> */}
+            <div className='m-3 flex justify-center items-center'>
+            <Link to={'/'}>
+            <img
+                src={Logo}
+                alt="Logo"
+                className='max-h-full max-w-full'
             />
-                <li>
-                    <Link to={"/"} >
-                        <img src={Logo}/>
-                    </Link>
-                </li>
-                {
-                    menu.map((menu, index)=> {
-                        return(
-                            <li key={index} className={`flex items-center ${enable ? 'gap-x-4 hover:bg-white' : 'justify-center'}  p-2 rounded-sm`}>
-                                <NavLink to={menu.path} className={`flex items-center`}>
-                                    <span className='p-2'>{menu.icons}</span>
-                                    <span className={`${!enable && 'hidden'}`}>{menu.title}</span>
-                                </NavLink>
-                            </li>
-                        )
-                    })
-                }
-                    
-            </ul>
-        </aside>
+            </Link>
+            </div>
+            <Menu onSelect={onClickMenu} theme="dark" defaultSelectedKeys={['1']} mode="inline" items={items} />
+        </Sider>
     </>
   )
 }

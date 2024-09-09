@@ -1,27 +1,53 @@
-import React, {useState, useEffect} from 'react'
-import { Outlet, useNavigate } from 'react-router-dom'
+import React, { useState } from 'react';
+import {  Layout,  theme } from 'antd';
+import { Outlet } from 'react-router-dom';
+const {Content, Footer } = Layout;
 import Sidebar from '../Sidebar'
-import Header from '../Header'
-const Layout = () => {
-  const navigate = useNavigate()
-  useEffect(()=> {
-    const isLogin = localStorage.getItem('isLogin')
-    if(!isLogin) {
-      navigate('/auth/signin')
-    }
-  },[])
+import Header from '../Header';
+
+const LayoutDashboard = () => {
+
+  
+  const {
+    token: { colorBgContainer, borderRadiusLG },
+  } = theme.useToken();
+
 
   return (
-    <div className='flex'>
-        <Sidebar/>
-        <div>
-          {/* <Header/> */}
-          <div className='mt-2 px-2'>
+    <Layout
+      className='h-[100vh]'
+    >
+      <Sidebar/>
+      <Layout>
+
+        <Header/>
+          
+        <Content
+          style={{
+            margin: '26px 16px',
+          }}
+        >
+
+          <div
+            style={{
+              padding: 24,
+              minHeight: 360,
+              background: colorBgContainer,
+              borderRadius: borderRadiusLG,
+            }}
+          >
             <Outlet/>
           </div>
-        </div>
-    </div>
-  )
-}
-
-export default Layout
+        </Content>
+        <Footer
+          style={{
+            textAlign: 'center',
+          }}
+        >
+          Kai the dev ©{new Date().getFullYear()}
+        </Footer>
+      </Layout>
+    </Layout>
+  );
+};
+export default LayoutDashboard;

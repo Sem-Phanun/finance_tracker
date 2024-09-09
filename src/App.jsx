@@ -1,11 +1,11 @@
 import React from 'react'
 import { Routes, Route } from 'react-router-dom'
 import Layout from './components/layouts/Layout'
-import Dashboard from './views/Dashboard'
-import Income from './views/Income'
-import Expense from './views/Expense'
-import Signup from './views/auth/Signup'
-import Signin from './views/auth/Signin'
+import Dashboard from './pages/Dashboard'
+import Income from './pages/Income'
+import Expense from './pages/Expense'
+import Signup from './pages/auth/Signup'
+import Signin from './pages/auth/Signin'
 import Auth from './components/layouts/Auth'
 const App = () => {
 
