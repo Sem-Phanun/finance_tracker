@@ -11,19 +11,17 @@ const App = () => {
 
   return (
     <>
-      <Routes>
-        <Route path='/auth/' element={<Auth/>}>
-          <Route path='signin' element={<Signin/>}/>
-          <Route path='signup' element={<Signup/>}/>
-        </Route>
-      </Routes>
-      <Routes>
-        <Route path='/' element={<Layout/>}>
-          <Route path='' element={<Dashboard/>}/>
-          <Route path='expenses' element={<Expense/>}/>
-          <Route path='income' element={<Income/>}/>
-        </Route>
-      </Routes>
+          <Routes>
+            <Route path='/auth/' element={<Auth/>}>
+              <Route path='signin' element={<Signin/>}/>
+              <Route path='signup' element={<Signup/>}/>
+            </Route>
+            <Route path='/' element={<Layout/>}>
+            <Route path='' element={<Dashboard/>}/>
+              <Route path='expenses' element={<Expense/>}/>
+              <Route path='income' element={<Income/>}/>
+            </Route>
+          </Routes>
     </>
   )
 }

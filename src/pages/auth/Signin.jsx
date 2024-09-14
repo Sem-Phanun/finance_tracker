@@ -1,16 +1,34 @@
-import React from 'react';
-import { Form, Input, Button, Layout, Row, Col } from 'antd';
+import React, { useEffect } from 'react';
+import { Form, Input, Button, Layout, Row, Col, message } from 'antd';
 import { LockOutlined, MailOutlined } from '@ant-design/icons';
-import { Link } from 'react-router-dom';
-
+import { Link,useNavigate } from 'react-router-dom';
 const { Content } = Layout;
+import { login } from '../../service/helperService'
 
 const Signin = () => {
-  const onFinish = (values) => {
-    console.log('Form Submitted with values:', values);
-    // Handle signup logic here
-  };
+  const [form] = Form.useForm();
+  const navigate = useNavigate();
 
+
+  const onFinish = async (values) => {
+    try {
+      const response = await login(values)
+      navigate("/")
+      
+      message.success('Login successful');
+    } catch (error) {
+      console.error("Login error:", error);
+        
+        if (error.status === 401) {
+          message.error('Invalid username or password. Please try again.');
+        }else if (error.status === 403) {
+          message.error('Invalid password or password. Please try again.');
+        }else {
+            const errorMessage = error.data && error.data.message ? error.data.message : 'Login failed. Please try again.';
+            message.error(errorMessage);
+        }
+    }
+  }
   return (
     <Layout className='h-[100vh]'>
       <Content>
@@ -26,24 +44,25 @@ const Signin = () => {
             >
               <span className='text-center font-bold -mt-3 text-lg'>Sign In</span>
               <Form
-                name="signup"
+                form={form}
+                name="signin"
                 onFinish={onFinish}
                 layout="vertical"
                 style={{ width: '100%'}}
               >
                 {/* Email Field */}
                 <Form.Item
-                  name="email or username"
-                  label="Email or Username"
+                  name="username"
+                  label="Username"
                   rules={[
-                    { required: true, message: 'Please input your email or username!' },
-                    { type: 'email or username', message: 'Please enter a valid email address or username!' },
+                    { required: true, message: 'Please input your username!' },
+                    { type: 'username', message: 'Please enter a valid username!' },
                   ]}
                   style={{
                     width: 'auto',
                   }}
                 >
-                  <Input prefix={<MailOutlined />} placeholder="Email or Username" />
+                  <Input prefix={<MailOutlined />} placeholder="Username" />
                 </Form.Item>
 
                 {/* Password Field */}
@@ -70,7 +89,7 @@ const Signin = () => {
                     block
                     style={{ marginBottom: '16px' }}
                   >
-                    Sign Up
+                    Sign In
                   </Button>
                 </Form.Item>
 

@@ -1,14 +1,26 @@
 import React from 'react';
-import { Form, Input, Button, Layout, Row, Col } from 'antd';
+import { Form, Input, Button, Layout, Row, Col, message } from 'antd';
 import { UserOutlined, LockOutlined, MailOutlined } from '@ant-design/icons';
-import { Link } from 'react-router-dom';
+import { Link,useNavigate } from 'react-router-dom';
+import { register } from '../../service/helperService';
 
 const { Content } = Layout;
 
 const Signup = () => {
-  const onFinish = (values) => {
-    console.log('Form Submitted with values:', values);
-    // Handle signup logic here
+  const [form] = Form.useForm();
+  const navigate = useNavigate()
+
+
+  const onFinish = async(values) => {
+    try {
+      
+      const response = await register(values)
+      console.log(values);
+      navigate("/")
+      message.success(response.message || 'Registration successful!');
+    } catch (error) {
+      message.error(error.message || 'Registration failed!');
+    }
   };
 
   return (
@@ -24,7 +36,8 @@ const Signup = () => {
             >
               <span className='text-center font-bold -mt-3 text-lg'>Sign Up</span>
               <Form
-                name="signup"
+                form={form}
+                name="register"
                 onFinish={onFinish}
                 layout="vertical"
                 style={{ width: '100%' }}
@@ -32,7 +45,7 @@ const Signup = () => {
                 <Row gutter={16}>
                   <Col span={12}>
                     <Form.Item
-                      name="firstname"
+                      name="firstName"
                       label="First Name"
                       rules={[{ required: true, message: 'Please input your first name!' }]}
                     >
@@ -41,7 +54,7 @@ const Signup = () => {
                   </Col>
                   <Col span={12}>
                     <Form.Item
-                      name="lastname"
+                      name="lastName"
                       label="Last Name"
                       rules={[{ required: true, message: 'Please input your last name!' }]}
                     >
